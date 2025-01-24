@@ -4,9 +4,10 @@ interface CurrentWeatherProps {
     temperature: number;
     windSpeed: number;
     isDay: boolean;
+    onAdd: Function;
 }
 
-export default function CurrentWeather({ icon, elevation, temperature, windSpeed, isDay }: CurrentWeatherProps) {
+export default function CurrentWeather({ icon, elevation, temperature, windSpeed, isDay, onAdd }: CurrentWeatherProps) {
     return (
         <>
             <div>
@@ -31,7 +32,7 @@ export default function CurrentWeather({ icon, elevation, temperature, windSpeed
                 </div>
                 <div className="text-center my-auto p-2 bg-blue-500">{!isDay ? 'Day' : 'Night'}</div>
                 <div className="text-center my-2">
-                    <button className="text-center p-2 bg-green-500">add</button>
+                    <button className="text-center p-2 bg-green-500" onClick={onAdd}>add</button>
                 </div>
             </div>
         </>

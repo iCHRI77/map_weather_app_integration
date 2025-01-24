@@ -2,9 +2,14 @@
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css"; // Importar los estilos
 import L, { LatLngExpression } from "leaflet";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CurrentWeather from "./current_Weather";
-import { fetchWeatherDataCelcius, fetchWeatherDataFahrenheit } from "../api";
+import { fetchWeatherDataCelcius, fetchWeatherDataFahrenheit } from "../utils/api";
+
+//for the CRUD logic of the places
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '@/lib/store';
+import { AddPlace, RemovePlace } from '@/lib/slices/markersReducer';
 
 // icons solution, this is for change the default config of icons of the map or load the icons from Leaflet (has a problem by default).
 delete L.Icon.Default.prototype._getIconUrl;
@@ -37,8 +42,11 @@ export default function Map() {
     isDay: true,
   });
 
+  const places = useSelector((state: RootState) => state.markersMapList.markers);
+  const dispatch = useDispatch();
 
-  // const [savedLocal, setSavedLocal] = useState([]);
+
+
   // Manage clicks in map
   const handleMapClick = (position: [number, number]) => {
     setMarkers([position]);
@@ -83,7 +91,15 @@ export default function Map() {
               elevation={weatherData.elevation}
               temperature={weatherData.temperature}
               windSpeed={weatherData.windSpeed}
-              isDay={weatherData.isDay} />
+              isDay={weatherData.isDay}
+              onAdd={() => 
+                dispatch(
+                AddPlace({
+                name: "Place_" + (places.length + 1),
+                temperature: String(weatherData.temperature),
+                weather: weatherData.icon
+              })
+              )} />
           </Popup>
         </Marker>
       ))}

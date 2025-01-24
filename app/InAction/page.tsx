@@ -1,11 +1,18 @@
 import Map from "../components/map"
-import { fetchWeatherDataCelcius, fetchWeatherDataFahrenheit } from "../api"
+import Sidebar from "../components/sidebar"
+import Navbar from "../components/navbar";
+import type { AppProps } from 'next/app';
+import StoreProvider from "@/lib/StoreProvider";
 
 
 export default function InAction() {
     return (
-        <div className="flex flex-row-2">
-            <Map />
-        </div>
+        <StoreProvider>
+            <Navbar />
+            <div className="flex flex-row-2">
+                <Sidebar />
+                <Map />
+            </div>
+        </StoreProvider>
     )
 }
