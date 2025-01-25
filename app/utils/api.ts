@@ -46,7 +46,6 @@ export const fetchWeatherDataFahrenheit = async (latLong: [number, number]) => {
         const response = await fetch(finalReq);
 
         const jsonData = await response.json();
-        console.log(jsonData)
         return (jsonData);
 
     } catch (error) {
@@ -56,3 +55,55 @@ export const fetchWeatherDataFahrenheit = async (latLong: [number, number]) => {
     }
 };
 
+/**
+ * 
+ * @param input String: Describe the location to search
+ * @returns Promise: JSON with lat and long Location data from the Nominatim API
+ */
+export const fetchPlacesData = async (input: String) => {
+    let urlBase = "https://nominatim.openstreetmap.org/search?format=json&q=";
+    let restData = input;
+    const finalReq = urlBase + restData + '&addressdetails=1';
+
+    try {
+
+        const response = await fetch(finalReq);
+
+        const jsonData = await response.json();
+        let coords = { "lat": Number(jsonData[0].lat), "long": Number(jsonData[0].lon), "name": jsonData[0].address.city }
+        console.log(coords)
+        return coords
+
+    } catch (error) {
+
+        console.error('Error fetching data:', error);
+
+    }
+};
+
+/**
+ * 
+ * @param input String: Describe the lat and lon of location to search
+ * @returns Promise: JSON with Location data from the Nominatim API
+ */
+export const fetchPlacesDataCoordinates = async (lat: Number, lon: Number) => {
+    let urlBase = "https://nominatim.openstreetmap.org/search?format=json&q=";
+    let restData = lat + '%2C' + lon + '&addressdetails=1';
+    const finalReq = urlBase + restData;
+
+    try {
+
+        const response = await fetch(finalReq);
+
+        const jsonData = await response.json();
+        console.log(jsonData)
+        let coords = { "lat": Number(jsonData[0].lat), "long": Number(jsonData[0].lon), "name": jsonData[0].address.city }
+        console.log(coords)
+        return coords
+
+    } catch (error) {
+
+        console.error('Error fetching data:', error);
+
+    }
+};

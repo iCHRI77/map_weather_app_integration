@@ -12,7 +12,7 @@ const Sidebar = () => {
 
     return (
         <div style={{ zIndex: 1000 }}>
-            <aside className="hidden md:block bg-[#023E8A] h-screen w-60 p-4 text-white">
+            <aside className="hidden md:block bg-[#023E8A] h-screen w-64 p-4 text-white">
                 <h2 className="text-xl font-bold mb-4">My Sites</h2>
                 {
                     markers.map((place, index) => (
