@@ -1,40 +1,35 @@
 "use client"
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css"; // Importar los estilos
-import L, { LatLngExpression } from "leaflet";
+import L from "leaflet";
 import { useEffect, useState } from "react";
 import CurrentWeather from "./current_Weather";
 import { fetchPlacesData, fetchPlacesDataCoordinates, fetchWeatherDataCelcius, fetchWeatherDataFahrenheit } from "../utils/api";
 
 
-//for the CRUD logic of the places
+// for the CRUD logic of the places
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/lib/store';
-import { AddPlace, RemovePlace } from '@/lib/slices/markersReducer';
+import { AddPlace } from '@/lib/slices/markersReducer';
 
 // icons solution, this is for change the default config of icons of the map or load the icons from Leaflet (has a problem by default).
-delete L.Icon.Default.prototype._getIconUrl;
-
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-  iconUrl: require("leaflet/dist/images/marker-icon.png"),
-  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
-});
+L.Icon.Default.prototype.options.iconRetinaUrl = require("leaflet/dist/images/marker-icon-2x.png");
+L.Icon.Default.prototype.options.iconUrl = require("leaflet/dist/images/marker-icon.png");
+L.Icon.Default.prototype.options.shadowUrl = require("leaflet/dist/images/marker-shadow.png");
 
 
-// Componente para manejar clics en el mapa
 const ClickableMap = ({ onMapClick }: any) => {
   useMapEvents({
     click: (event) => {
-      const { lat, lng } = event.latlng; // Coordenadas del clic
-      onMapClick([lat, lng]); // Llamar a la función pasada como prop
+      const { lat, lng } = event.latlng; // Coords of click
+      onMapClick([lat, lng]); // call the funct as prop
     },
   });
-  return null; // Este componente no necesita renderizar nada
+  return null;
 };
 
 export default function Map() {
-  const [markers, setMarkers] = useState<[number, number][]>([]); // Almacenar los marcadores
+  const [markers, setMarkers] = useState<[number, number][]>([]); // Save mark
   const [placeSearch, setPlaceSearch] = useState("");
   const [placeName, setPlaceName] = useState("");
 
@@ -55,15 +50,14 @@ export default function Map() {
   const handleMapClick = (position: [number, number]) => {
     setMarkers([position]);
     fetchPlacesDataCoordinates(position[0], position[1]).then((data) => {
-      if (data && typeof data.name === 'string') {
-        setPlaceName(data.name);
+      if (data && typeof data.city === 'string') {
+        setPlaceName(data.city);
       }
     }).catch((error) => {
       console.error('Error fetching data:', error);
     });
-    // console.log(markers)
-    // when client click on save button, the position will be saved in the list
-    // setSavedLocal((prevMarkers) => [...prevMarkers, position]);
+
+
   };
 
 
@@ -89,25 +83,27 @@ export default function Map() {
 
   return (
     <>
-      <div className="absolute top-8 left-1/2 transform -translate-x-1/2">
+      <div className="absolute flex top-8 left-1/2 transform -translate-x-1/2 w-72">
         <input
           type="text"
           value={placeSearch}
           onChange={(e) => setPlaceSearch(e.target.value)}
-          placeholder="Buscar lugar..."
+          placeholder="Search a Place..."
           style={{ padding: "8px", width: "200px" }}
         />
-        <button style={{ padding: "8px", marginLeft: "5px" }} onClick={async () => {
-          await fetchPlacesData(placeSearch).then((data) => {
-            if (data && typeof data.lat === 'number' && typeof data.long === 'number') {
-              setMarkers([[data.lat, data.long]]);
-              setPlaceName(data.name);
-            }
-          }).catch((error) => {
-            console.error('Error fetching data:', error);
-          });
-        }
-        }>
+        <button
+          className="text-md px-3 py-2 flex items-center text-base uppercase font-bold leading-snug bg-green-600 text-white hover:opacity-75 hover:text-black"
+          onClick={async () => {
+            await fetchPlacesData(placeSearch).then((data) => {
+              if (data && typeof data.lat === 'number' && typeof data.long === 'number') {
+                setMarkers([[data.lat, data.long]]);
+                setPlaceName(data.name);
+              }
+            }).catch((error) => {
+              console.error('Error fetching data:', error);
+            });
+          }
+          }>
           Buscar
         </button>
       </div>
@@ -119,7 +115,7 @@ export default function Map() {
         <ClickableMap onMapClick={handleMapClick} />
         {markers.map((position, index) => (
           <Marker key={index} position={position}>
-            <Popup>
+            <Popup  >
               <CurrentWeather
                 icon={weatherData.icon}
                 elevation={weatherData.elevation}

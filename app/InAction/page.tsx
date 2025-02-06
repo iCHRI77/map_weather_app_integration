@@ -1,7 +1,6 @@
 import Map from "../components/map"
 import Sidebar from "../components/sidebar"
 import Navbar from "../components/navbar";
-import type { AppProps } from 'next/app';
 import StoreProvider from "@/lib/StoreProvider";
 
 

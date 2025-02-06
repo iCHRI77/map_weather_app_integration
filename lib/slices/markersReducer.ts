@@ -9,9 +9,9 @@ const initialState: markersMapList = {
 };
 
 interface Place {
-    name: String;
-    temperature: String;
-    weather: String;
+    name: string;
+    temperature: string;
+    weather: string;
 }
 
 const markersMapListSlice = createSlice({
@@ -21,8 +21,8 @@ const markersMapListSlice = createSlice({
         AddPlace: (state, action: PayloadAction<Place>) => {
             state.markers.push(action.payload);
         },
-        RemovePlace: (state, action: PayloadAction<Number>) => {
-            state.markers = state.markers.filter((_, index) => index !== action.payload);
+        RemovePlace: (state, action: PayloadAction<number>) => {
+            state.markers.splice(action.payload, 1);
 
         }
     },

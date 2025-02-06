@@ -4,7 +4,7 @@ interface CurrentWeatherProps {
     temperature: number;
     windSpeed: number;
     isDay: boolean;
-    onAdd: Function;
+    onAdd: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 export default function CurrentWeather({ icon, elevation, temperature, windSpeed, isDay, onAdd }: CurrentWeatherProps) {

@@ -9,7 +9,7 @@ import { FaBars } from "react-icons/fa";
 let menu = [
     { id: 1, description: "Home", url: "/" },
     { id: 2, description: "In Action", url: "/InAction" },
-    { id: 3, description: "Reach Dev Christian", url: "/Dev" },
+    { id: 3, description: "Reach Dev Christian", url: "https://www.linkedin.com/in/christianbarbosa2711/" },
 ]
 
 
