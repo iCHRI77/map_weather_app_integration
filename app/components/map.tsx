@@ -8,8 +8,8 @@ import { fetchPlacesData, fetchPlacesDataCoordinates, fetchWeatherDataCelcius} f
 
 
 // for the CRUD logic of the places
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '@/lib/store';
+import { useDispatch } from 'react-redux';
+// import { RootState } from '@/lib/store';
 import { AddPlace } from '@/lib/slices/markersReducer';
 
 // icons solution, this is for change the default config of icons of the map or load the icons from Leaflet (has a problem by default).
