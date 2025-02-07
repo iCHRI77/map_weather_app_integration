@@ -1,12 +1,13 @@
 'use client'
 
+import Image from "next/image";
 import Link from "next/link"
 import { useState } from "react";
 import { FaBars } from "react-icons/fa";
 
 
 
-let menu = [
+const menu = [
     { id: 1, description: "Home", url: "/" },
     { id: 2, description: "In Action", url: "/InAction" },
     { id: 3, description: "Reach Dev Christian", url: "https://www.linkedin.com/in/christianbarbosa2711/" },
@@ -24,10 +25,12 @@ function Navbar() {
                             className="text-md font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap text-white"
                             href="/"
                         >
-                            <img
+                            <Image
                                 src="/WeatherMapAppLogo.png"
                                 alt="Weather Map App Logo"
-                                style={{ objectFit: 'cover', width: '5em' }}
+                                width={80}
+                                height={50}
+                                objectFit="cover"
                             />
 
                         </Link>

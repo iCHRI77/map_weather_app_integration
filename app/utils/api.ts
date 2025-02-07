@@ -57,10 +57,10 @@ export const fetchWeatherDataFahrenheit = async (latLong: [number, number]) => {
 
 /**
  * 
- * @param input String: Describe the location to search
+ * @param input string: Describe the location to search
  * @returns Promise: JSON with lat and long Location data from the Nominatim API
  */
-export const fetchPlacesData = async (input: String) => {
+export const fetchPlacesData = async (input: string) => {
     const urlBase = "https://nominatim.openstreetmap.org/search?format=json&q=";
     const restData = input;
     const finalReq = urlBase + restData + '&addressdetails=1';
@@ -83,10 +83,10 @@ export const fetchPlacesData = async (input: String) => {
 
 /**
  * 
- * @param input String: Describe the lat and lon of location to search
+ * @param input string: Describe the lat and lon of location to search
  * @returns Promise: JSON with Location data from the Nominatim API
  */
-export const fetchPlacesDataCoordinates = async (lat: Number, lon: Number) => {
+export const fetchPlacesDataCoordinates = async (lat: number, lon: number) => {
     const urlBase = "https://nominatim.openstreetmap.org/search?format=json&q=";
     const restData = lat + '%2C' + lon + '&addressdetails=1';
     const finalReq = urlBase + restData;
