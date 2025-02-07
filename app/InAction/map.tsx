@@ -4,7 +4,7 @@ import "leaflet/dist/leaflet.css"; // Importar los estilos
 import L from "leaflet";
 import { useEffect, useState } from "react";
 import CurrentWeather from "./current_Weather";
-import { fetchPlacesData, fetchPlacesDataCoordinates, fetchWeatherDataCelcius} from "../utils/api";
+import { fetchPlacesData, fetchPlacesDataCoordinates, fetchWeatherDataCelcius } from "../utils/api";
 
 
 // for the CRUD logic of the places
@@ -19,9 +19,9 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
+  iconRetinaUrl: markerIcon2x.src,
+  iconUrl: markerIcon.src,
+  shadowUrl: markerShadow.src,
 });
 
 
@@ -63,8 +63,8 @@ export default function Map() {
     }).catch((error) => {
       console.error('Error fetching data:', error);
     });
-    
-    
+
+
   };
 
 
@@ -90,17 +90,9 @@ export default function Map() {
 
   return (
     <>
-      <div className="absolute flex top-8 left-1/2 transform -translate-x-1/2 w-72">
-        <input
-          type="text"
-          value={placeSearch}
-          onChange={(e) => setPlaceSearch(e.target.value)}
-          placeholder="Search a Place..."
-          style={{ padding: "8px", width: "200px" }}
-        />
-        <button
-          className="text-md px-3 py-2 flex items-center text-base uppercase font-bold leading-snug bg-green-600 text-white hover:opacity-75 hover:text-black"
-          onClick={async () => {
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-72">
+        <form action={
+          async () => {
             await fetchPlacesData(placeSearch).then((data) => {
               if (data && typeof data.lat === 'number' && typeof data.long === 'number') {
                 setMarkers([[data.lat, data.long]]);
@@ -110,9 +102,23 @@ export default function Map() {
               console.error('Error fetching data:', error);
             });
           }
-          }>
-          Buscar
-        </button>
+        }
+        className="flex">
+
+          <input
+            type="text"
+            value={placeSearch}
+            onChange={(e) => setPlaceSearch(e.target.value)}
+            placeholder="Search a Place..."
+            style={{ padding: "8px", width: "400px" }}
+          />
+          <button
+            type="submit"
+            className="text-md px-3 py-2 items-center text-base uppercase font-bold bg-green-600 text-white hover:opacity-75 hover:text-black"
+          >
+            Search
+          </button>
+        </form>
       </div>
       <MapContainer center={[3.525, -76.29876]} zoom={14} style={{ height: "100vh", width: "100%" }}>
         <TileLayer
