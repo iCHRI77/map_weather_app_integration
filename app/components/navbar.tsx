@@ -29,8 +29,7 @@ function Navbar() {
                                 src="/WeatherMapAppLogo.png"
                                 alt="Weather Map App Logo"
                                 width={80}
-                                height={50}
-                                objectFit="cover"
+                                height={80}
                             />
 
                         </Link>
