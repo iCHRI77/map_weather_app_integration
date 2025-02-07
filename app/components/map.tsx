@@ -1,10 +1,10 @@
 "use client"
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css"; // Importar los estilos
-import L, { LatLngExpression } from "leaflet";
+import L from "leaflet";
 import { useEffect, useState } from "react";
 import CurrentWeather from "./current_Weather";
-import { fetchPlacesData, fetchPlacesDataCoordinates, fetchWeatherDataCelcius, fetchWeatherDataFahrenheit } from "../utils/api";
+import { fetchPlacesData, fetchPlacesDataCoordinates, fetchWeatherDataCelcius} from "../utils/api";
 
 
 // for the CRUD logic of the places
@@ -15,14 +15,18 @@ import { AddPlace } from '@/lib/slices/markersReducer';
 // icons solution, this is for change the default config of icons of the map or load the icons from Leaflet (has a problem by default).
 delete L.Icon.Default.prototype._getIconUrl;
 
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-  iconUrl: require("leaflet/dist/images/marker-icon.png"),
-  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
 });
 
 
-const ClickableMap = ({ onMapClick }: any) => {
+const ClickableMap = ({ onMapClick }: { onMapClick: (position: [number, number]) => void }) => {
   useMapEvents({
     click: (event) => {
       const { lat, lng } = event.latlng; // Coords of click
@@ -45,7 +49,7 @@ export default function Map() {
     isDay: true,
   });
 
-  const places = useSelector((state: RootState) => state.markersMapList.markers);
+  // const places = useSelector((state: RootState) => state.markersMapList.markers);
   const dispatch = useDispatch();
 
 
