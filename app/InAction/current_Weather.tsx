@@ -7,14 +7,13 @@ interface CurrentWeatherProps {
     onAdd: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-export default function CurrentWeather({ icon, elevation, temperature, windSpeed, isDay, onAdd }: CurrentWeatherProps) {
+export default function CurrentWeather({ elevation, temperature, windSpeed, isDay, onAdd }: CurrentWeatherProps) {
     return (
         <>
             <div>
                 <div className="grid grid-cols-2 gap-4 bg-[#272727]" style={{ width: '300px', height: '300px', padding: '20px', boxSizing: 'border-box' }}>
 
                     <div className="flex flex-col text-center my-auto gap-2">
-                        {/* <span className="justify-center" style={{ width: '50px', height: '50px' }}>{icon}</span> */}
                         <span className="justify-center font-bold text-4xl">Now</span>
                     </div>
                     <div className="flex flex-col text-center my-auto gap-2">
