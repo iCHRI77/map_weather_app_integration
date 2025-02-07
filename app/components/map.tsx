@@ -13,7 +13,6 @@ import { useDispatch } from 'react-redux';
 import { AddPlace } from '@/lib/slices/markersReducer';
 
 // icons solution, this is for change the default config of icons of the map or load the icons from Leaflet (has a problem by default).
-delete L.Icon.Default.prototype._getIconUrl;
 
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
