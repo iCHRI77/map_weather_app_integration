@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Navbar from "./components/navbar";
-// import * as motion from "motion/react-client"
+import * as motion from "motion/react-client"
 
 
 export default function Home() {
@@ -19,16 +19,31 @@ export default function Home() {
           For showing my skills integrating different libraries and doing interactive components, this is for you: Go to see it <Link href="/InAction" className="text-red-600 underline">In Action</Link>.
         </p>
       </section>
-      {/* <motion.section
+      <motion.div
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{
           duration: 0.4,
           scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
         }}
+        className="relative mt-5 justify-self-center overflow-hidden"
       >
-        <p>test</p>
-      </motion.section> */}
+        {/* <iframe
+          width={720}
+          height={360}
+          src="https://www.youtube.com/embed/ZjAqacIC_3c?list=PLC3y8-rFHvwjOKd6gdf4QtV1uYNiQnruI"
+          title="Next.js 14 Tutorial - 1 - Introduction"
+          frameBorder="0"
+          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen>
+        </iframe> */}
+        <div>
+          <p><i>Video Here</i></p>
+        </div>
+
+
+      </motion.div>
     </div>
   );
 }

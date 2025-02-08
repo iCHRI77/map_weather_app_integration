@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import CurrentWeather from "./current_Weather";
 import { fetchPlacesData, fetchPlacesDataCoordinates, fetchWeatherDataCelcius } from "../utils/api";
 
-
 // for the CRUD logic of the places
 import { useDispatch } from 'react-redux';
 // import { RootState } from '@/lib/store';
@@ -64,7 +63,6 @@ export default function Map() {
       console.error('Error fetching data:', error);
     });
 
-
   };
 
 
@@ -88,6 +86,8 @@ export default function Map() {
 
   }, [markers]);
 
+  const [newPlace, setNewPlace] = useState(true)
+
   return (
     <>
       <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-72">
@@ -103,8 +103,7 @@ export default function Map() {
             });
           }
         }
-        className="flex">
-
+          className="flex">
           <input
             type="text"
             value={placeSearch}
@@ -142,7 +141,8 @@ export default function Map() {
                       temperature: String(weatherData.temperature),
                       weather: weatherData.icon
                     })
-                  )} />
+                  )
+                } />
             </Popup>
           </Marker>
         ))}

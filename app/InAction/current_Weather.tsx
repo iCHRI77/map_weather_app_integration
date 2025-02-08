@@ -1,3 +1,5 @@
+import NotificationToast from "../components/notificationToast";
+
 interface CurrentWeatherProps {
     icon: string;
     elevation: number;
@@ -31,7 +33,10 @@ export default function CurrentWeather({ elevation, temperature, windSpeed, isDa
                 </div>
                 <div className="text-center my-auto p-2 bg-blue-500">{!isDay ? 'Day' : 'Night'}</div>
                 <div className="text-center my-2">
-                    <button className="text-center p-2 bg-green-500" onClick={onAdd}>add</button>
+                    <button className="text-center p-2 bg-green-500" onClick={(event)=>{
+                        onAdd(event)
+                        NotificationToast()
+                        }}>add</button>
                 </div>
             </div>
         </>

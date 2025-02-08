@@ -95,18 +95,25 @@ export const fetchPlacesDataCoordinates = async (lat: number, lon: number) => {
 
         const response = await fetch(finalReq);
         const jsonData = await response.json();
+
         if (!jsonData[0].address.city) {
             const coords = { "lat": Number(jsonData[0].lat), "long": Number(jsonData[0].lon), "city": jsonData[0].address.town }
             console.log(coords)
             return coords
         } else {
-            const coords = { "lat": Number(jsonData[0].lat), "long": Number(jsonData[0].lon), "city": jsonData[0].address.city }
-            console.log(coords)
-            return coords
+            if (!jsonData[0].address.town) {
+                const coords = { "lat": Number(jsonData[0].lat), "long": Number(jsonData[0].lon), "city": jsonData[0].address.city }
+                console.log(coords)
+                return coords
+            }
         }
-    } catch (error) {
 
+
+    } catch (error) {
         console.error('Error fetching data:', error);
+        const coords = { "lat": 0, "long": 0, "city": "Not Found" }
+        console.log(coords)
+        return coords
 
     }
 };

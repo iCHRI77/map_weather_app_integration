@@ -21,6 +21,8 @@
     "react-leaflet": "^5.0.0",
     "react-redux": "^9.2.0",
     "save": "^2.9.0",
+    "sweetalert2": "^11.15.10",
+    "sweetalert2-react-content": "^5.1.0",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
