@@ -1,7 +1,7 @@
 import NotificationToast from "../components/notificationToast";
 
 interface CurrentWeatherProps {
-    icon: string;
+    placeName: string;
     elevation: number;
     temperature: number;
     windSpeed: number;
@@ -9,7 +9,7 @@ interface CurrentWeatherProps {
     onAdd: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-export default function CurrentWeather({ elevation, temperature, windSpeed, isDay, onAdd }: CurrentWeatherProps) {
+export default function CurrentWeather({ placeName, elevation, temperature, windSpeed, isDay, onAdd }: CurrentWeatherProps) {
     return (
         <>
             <div>
@@ -35,7 +35,7 @@ export default function CurrentWeather({ elevation, temperature, windSpeed, isDa
                 <div className="text-center my-2">
                     <button className="text-center p-2 bg-green-500" onClick={(event)=>{
                         onAdd(event)
-                        NotificationToast()
+                        NotificationToast(placeName)
                         }}>add</button>
                 </div>
             </div>

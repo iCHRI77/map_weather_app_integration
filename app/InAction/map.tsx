@@ -129,7 +129,7 @@ export default function Map() {
           <Marker key={index} position={position}>
             <Popup >
               <CurrentWeather
-                icon={weatherData.icon}
+                placeName={placeName}
                 elevation={weatherData.elevation}
                 temperature={weatherData.temperature}
                 windSpeed={weatherData.windSpeed}
