@@ -86,8 +86,6 @@ export default function Map() {
 
   }, [markers]);
 
-  const [newPlace, setNewPlace] = useState(true)
-
   return (
     <>
       <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-72">
