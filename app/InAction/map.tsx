@@ -88,35 +88,38 @@ export default function Map() {
 
   return (
     <>
-      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-72">
+
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2"
+      style={{ width: '80%', maxWidth: '250px' }}>
         <form action={
           async () => {
-            await fetchPlacesData(placeSearch).then((data) => {
-              if (data && typeof data.lat === 'number' && typeof data.long === 'number') {
-                setMarkers([[data.lat, data.long]]);
-                setPlaceName(data.name);
-              }
-            }).catch((error) => {
-              console.error('Error fetching data:', error);
-            });
+        await fetchPlacesData(placeSearch).then((data) => {
+          if (data && typeof data.lat === 'number' && typeof data.long === 'number') {
+            setMarkers([[data.lat, data.long]]);
+            setPlaceName(data.name);
+          }
+        }).catch((error) => {
+          console.error('Error fetching data:', error);
+        });
           }
         }
-          className="flex">
+          className="flex flex-row w-full">
           <input
-            type="text"
-            value={placeSearch}
-            onChange={(e) => setPlaceSearch(e.target.value)}
-            placeholder="Search a Place..."
-            style={{ padding: "8px", width: "400px" }}
+        type="text"
+        value={placeSearch}
+        onChange={(e) => setPlaceSearch(e.target.value)}
+        placeholder="Search a Place..."
+        className="flex-grow p-2"
           />
           <button
-            type="submit"
-            className="text-md px-3 py-2 items-center text-base uppercase font-bold bg-green-600 text-white hover:opacity-75 hover:text-black"
+        type="submit"
+        className="text-md px-3 py-2 items-center text-base uppercase font-bold bg-green-600 text-white hover:opacity-75 hover:text-black"
           >
-            Search
+        Search
           </button>
         </form>
       </div>
+
       <MapContainer center={[3.525, -76.29876]} zoom={14} style={{ height: "100vh", width: "100%" }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

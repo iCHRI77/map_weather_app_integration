@@ -14,8 +14,8 @@ const Sidebar = () => {
     const dispatch = useDispatch();
 
     return (
-        <div style={{ zIndex: 1000 }}>
-            <aside className="hidden md:block bg-[#023E8A] h-screen w-64 p-4 text-white">
+        <div style={{ zIndex: 1020, backgroundColor:'#023E8A'}}>
+            <aside className="hidden md:block h-screen w-64 p-4 text-white overflow-y-auto">
                 <h2 className="text-xl font-bold mb-4">My Sites</h2>
                 {
                     (markers.length === 0) ? <div className="text-center text-white">No markers added</div>
@@ -55,13 +55,14 @@ const Sidebar = () => {
 
             {isMobileMenuOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-blue-500 text-white p-6 rounded shadow-lg w-3/4">
+                    <div className="bg-blue-500 text-white p-6 rounded shadow-lg w-3/4 overflow-y-auto max-h-screen">
                         <div className="flex justify-between items-center mb-4">
                             <button onClick={() => setMobileMenuOpen(false)}>
                                 <FaTimes size={24} />
                             </button>
                         </div>
                         <div className="space-y-4">
+                        <h2 className="text-xl font-bold mb-4">My Sites</h2>
                             {
                                 (markers.length === 0) ? <div className="text-center text-white">No markers added</div>
                                     :
@@ -72,7 +73,11 @@ const Sidebar = () => {
                                                 <span>{place.weather}</span>
                                                 <span>{place.temperature}°C</span>
                                                 <span style={{ color: 'red', cursor: 'pointer', padding: '2px' }}
-                                                    onClick={() => dispatch({ type: 'REMOVE_MARKER', payload: index })}
+                                                    onClick={() =>
+                                                        dispatch(
+                                                            RemovePlace(index)
+                                                        )
+                                                    }
                                                 ><MdDeleteForever /></span>
 
                                             </div>
