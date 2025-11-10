@@ -6,21 +6,17 @@ import { useEffect, useState } from "react";
 import CurrentWeather from "./current_Weather";
 import { fetchPlacesData, fetchPlacesDataCoordinates, fetchWeatherDataCelcius } from "../utils/api";
 
-// for the CRUD logic of the places
-import { useDispatch } from 'react-redux';
-// import { RootState } from '@/lib/store';
-import { AddPlace } from '@/lib/slices/markersReducer';
+// Zustand store for markers
+import { useMarkersStore } from '@/lib/markersStore';
 
-// icons solution, this is for change the default config of icons of the map or load the icons from Leaflet (has a problem by default).
+// Fix for Leaflet's default icon in Next.js
+import { Icon } from 'leaflet';
 
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x.src,
-  iconUrl: markerIcon.src,
-  shadowUrl: markerShadow.src,
+delete (Icon.Default.prototype as any)._getIconUrl;
+Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
 });
 
 
@@ -34,9 +30,12 @@ const ClickableMap = ({ onMapClick }: { onMapClick: (position: [number, number])
   return null;
 };
 
-export default function Map() {
+interface MapProps {
+  onMarkerClick?: (position: [number, number]) => void;
+}
+
+export default function Map({ onMarkerClick }: MapProps) {
   const [markers, setMarkers] = useState<[number, number][]>([]); // Save mark
-  const [placeSearch, setPlaceSearch] = useState("");
   const [placeName, setPlaceName] = useState("");
 
   const [weatherData, setWeatherData] = useState({
@@ -47,14 +46,16 @@ export default function Map() {
     isDay: true,
   });
 
-  // const places = useSelector((state: RootState) => state.markersMapList.markers);
-  const dispatch = useDispatch();
+  const { addPlace } = useMarkersStore();
 
 
 
   // Manage clicks in map
   const handleMapClick = (position: [number, number]) => {
     setMarkers([position]);
+    if (onMarkerClick) {
+      onMarkerClick(position);
+    }
     fetchPlacesDataCoordinates(position[0], position[1]).then((data) => {
       if (data && typeof data.city === 'string') {
         setPlaceName(data.city);
@@ -62,7 +63,6 @@ export default function Map() {
     }).catch((error) => {
       console.error('Error fetching data:', error);
     });
-
   };
 
 
@@ -86,68 +86,53 @@ export default function Map() {
 
   }, [markers]);
 
+  const handleSearch = async (query: string) => {
+    try {
+      const data = await fetchPlacesData(query);
+      if (data && typeof data.lat === 'number' && typeof data.long === 'number') {
+        setMarkers([[data.lat, data.long]]);
+        setPlaceName(data.name);
+      }
+    } catch (error) {
+      console.error('Error searching location:', error);
+    }
+  };
+
   return (
-    <>
-
-      <div className="absolute top-8 left-1/2 transform -translate-x-1/2"
-      style={{ width: '80%', maxWidth: '250px' }}>
-        <form action={
-          async () => {
-        await fetchPlacesData(placeSearch).then((data) => {
-          if (data && typeof data.lat === 'number' && typeof data.long === 'number') {
-            setMarkers([[data.lat, data.long]]);
-            setPlaceName(data.name);
-          }
-        }).catch((error) => {
-          console.error('Error fetching data:', error);
-        });
-          }
-        }
-          className="flex flex-row w-full">
-          <input
-        type="text"
-        value={placeSearch}
-        onChange={(e) => setPlaceSearch(e.target.value)}
-        placeholder="Search a Place..."
-        className="flex-grow p-2"
-          />
-          <button
-        type="submit"
-        className="text-md px-3 py-2 items-center text-base uppercase font-bold bg-green-600 text-white hover:opacity-75 hover:text-black"
-          >
-        Search
-          </button>
-        </form>
-      </div>
-
-      <MapContainer center={[3.525, -76.29876]} zoom={14} style={{ height: "100vh", width: "100%" }}>
+    <div className="w-full h-full">
+      <MapContainer 
+        center={[3.525, -76.29876]} 
+        zoom={14} 
+        style={{ 
+          width: '100%', 
+          height: '100%',
+          backgroundColor: '#e5e7eb', // Light gray background
+        }}
+        className="rounded-2xl shadow-lg"
+      >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         <ClickableMap onMapClick={handleMapClick} />
         {markers.map((position, index) => (
-          <Marker key={index} position={position}>
-            <Popup >
-              <CurrentWeather
-                placeName={placeName}
-                elevation={weatherData.elevation}
-                temperature={weatherData.temperature}
-                windSpeed={weatherData.windSpeed}
-                isDay={weatherData.isDay}
-                onAdd={() =>
-                  dispatch(
-                    AddPlace({
-                      name: placeName,
-                      temperature: String(weatherData.temperature),
-                      weather: weatherData.icon
-                    })
-                  )
-                } />
-            </Popup>
+          <Marker 
+            key={index} 
+            position={position}
+            icon={new Icon({
+              iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+              iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+              shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+            })}
+          >
+            {/* Popup content removed as per your request */}
           </Marker>
         ))}
       </MapContainer>
-    </>
+    </div>
   );
 }

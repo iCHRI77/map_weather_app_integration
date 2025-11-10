@@ -1,44 +1,123 @@
+import { FiMapPin, FiThermometer, FiWind, FiPlusCircle, FiDroplet, FiClock } from 'react-icons/fi';
+import { WiSunrise, WiMoonAltWaningCrescent4 } from 'react-icons/wi';
+import { useEffect, useState } from 'react';
 import NotificationToast from "../components/notificationToast";
+import { FaHome } from 'react-icons/fa';
 
 interface CurrentWeatherProps {
+    country: string;
     placeName: string;
     elevation: number;
     temperature: number;
+    temperatureMax?: number;
+    temperatureMin?: number;
+    humidity?: number;
+    timezone?: string;
     windSpeed: number;
     isDay: boolean;
     onAdd: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-export default function CurrentWeather({ placeName, elevation, temperature, windSpeed, isDay, onAdd }: CurrentWeatherProps) {
-    return (
-        <>
-            <div>
-                <div className="grid grid-cols-2 gap-4 bg-[#272727]" style={{ width: '300px', height: '300px', padding: '20px', boxSizing: 'border-box' }}>
+export default function CurrentWeather({     
 
-                    <div className="flex flex-col text-center my-auto gap-2">
-                        <span className="justify-center font-bold text-4xl">Now</span>
+    country,
+    placeName, 
+    elevation, 
+    temperature, 
+    temperatureMax, 
+    temperatureMin, 
+    humidity,
+    windSpeed, 
+    isDay, 
+    onAdd 
+
+
+    
+}: CurrentWeatherProps) {
+
+
+
+
+    return (
+        <div className="w-96 m-4 h-auto bg-white shadow-lg rounded-xl flex flex-col overflow-hidden">
+            {/* Header */}
+            <div className="p-5 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                        <FiMapPin className="mr-2 text-blue-500" />
+                        <h2 className="text-xl font-semibold">
+                            {placeName ? `${placeName}${country ? ', ' + country : ''}` : 'Select a location'}
+                        </h2>
                     </div>
-                    <div className="flex flex-col text-center my-auto gap-2">
-                        <span className="justify-center text-3xl">{temperature}°C</span>
-                        <span className="justify-center font-bold">Temperature</span>
-                    </div>
-                    <div className="flex flex-col text-center my-auto gap-2">
-                        <span className="justify-center text-3xl">{elevation}m</span>
-                        <span className="justify-center font-bold">Elevation</span>
-                    </div>
-                    <div className="flex flex-col text-center my-auto gap-2">
-                        <span className="justify-center text-3xl">{windSpeed} km/h</span>
-                        <span className="justify-center font-bold">Wind Speed</span>
-                    </div>
+{/*                     <div className="flex items-center text-gray-600">
+                        {isDay ? 
+                            <WiSunrise className="text-2xl text-yellow-500" /> : 
+                            <WiMoonAltWaningCrescent4 className="text-2xl text-blue-900" />
+                        }
+                        <span className="ml-1 text-sm">{isDay ? 'Day' : 'Night'}</span>
+                    </div> */}
+                </div>  
+            </div>
+
+            {/* Current Temperature */}
+            <div className="p-6 text-center">
+                <div className="text-5xl font-bold text-gray-800">
+                    {Math.round(temperature)}°C
                 </div>
-                <div className="text-center my-auto p-2 bg-blue-500">{!isDay ? 'Day' : 'Night'}</div>
-                <div className="text-center my-2">
-                    <button className="text-center p-2 bg-green-500" onClick={(event)=>{
-                        onAdd(event)
-                        NotificationToast(placeName)
-                        }}>add</button>
+                <div className="text-gray-500 text-sm mt-1">
+                    {temperatureMax !== undefined && temperatureMin !== undefined && (
+                        <span>H: {Math.round(temperatureMax)}° L: {Math.round(temperatureMin)}°</span>
+                    )}
                 </div>
             </div>
-        </>
+
+            {/* Weather Details */}
+            <div className="px-6 py-2">
+                <div className="space-y-3">
+                    <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                        <div className="flex items-center">
+                            <FiThermometer className="text-blue-500 mr-3" />
+                            <span className="text-gray-600">Feels Like</span>
+                        </div>
+                        <span className="font-medium">{Math.round(temperature + 2)}°C</span>
+                    </div>
+                    <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                        <div className="flex items-center">
+                            <FiDroplet className="text-blue-500 mr-3" />
+                            <span className="text-gray-600">Humidity</span>
+                        </div>
+                        <span className="font-medium">{humidity !== undefined ? `${humidity}%` : '--'}</span>
+                    </div>
+                    <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                        <div className="flex items-center">
+                            <FiWind className="text-blue-500 mr-3" />
+                            <span className="text-gray-600">Wind Speed</span>
+                        </div>
+                        <span className="font-medium">{Math.round(windSpeed)} km/h</span>
+                    </div>
+                    <div className="flex items-center justify-between py-2">
+                        <div className="flex items-center">
+                            <FaHome className="text-blue-500 mr-3" />
+                            <span className="text-gray-600">Elevation</span>
+                        </div>
+                        <span className="font-medium">{Math.round(elevation)} m</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Action Button */}
+            <div className="p-4 border-t border-gray-200 mt-auto">
+                <button
+                    onClick={(e) => {
+                        onAdd(e);
+                        NotificationToast(placeName);
+                    }}
+                    className="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors duration-200"
+                >
+                    <FiPlusCircle />
+                    Add to Favorites
+                </button>
+            </div>
+        </div>
     );
 };
