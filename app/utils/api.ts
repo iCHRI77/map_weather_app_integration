@@ -86,34 +86,60 @@ export const fetchPlacesData = async (input: string) => {
  * @param input string: Describe the lat and lon of location to search
  * @returns Promise: JSON with Location data from the Nominatim API
  */
-export const fetchPlacesDataCoordinates = async (lat: number, lon: number) => {
-    const urlBase = "https://nominatim.openstreetmap.org/search?format=json&q=";
-    const restData = lat + '%2C' + lon + '&addressdetails=1';
-    const finalReq = urlBase + restData;
+interface PlaceData {
+    lat: number;
+    long: number;
+    city: string;
+    country: string;
+}
+
+export const fetchPlacesDataCoordinates = async (lat: number, lon: number): Promise<PlaceData> => {
+    const urlBase = "https://nominatim.openstreetmap.org/reverse?format=json&";
+    const params = new URLSearchParams({
+        lat: lat.toString(),
+        lon: lon.toString(),
+        addressdetails: '1',
+        'accept-language': 'es'
+    });
+    const finalReq = urlBase + params;
 
     try {
-
-        const response = await fetch(finalReq);
-        const jsonData = await response.json();
-
-        if (!jsonData[0].address.city) {
-            const coords = { "lat": Number(jsonData[0].lat), "long": Number(jsonData[0].lon), "city": jsonData[0].address.town }
-            console.log(coords)
-            return coords
-        } else {
-            if (!jsonData[0].address.town) {
-                const coords = { "lat": Number(jsonData[0].lat), "long": Number(jsonData[0].lon), "city": jsonData[0].address.city }
-                console.log(coords)
-                return coords
+        const response = await fetch(finalReq, {
+            headers: {
+                'User-Agent': 'WeatherApp/1.0 (your@email.com)'
             }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (!data) {
+            throw new Error('No data received from the API');
         }
 
+        // Extract city and country from the address
+        const address = data.address || {};
+        const city = address.city || address.town || address.village || address.hamlet || 
+                    address.county || address.state || data.display_name?.split(',')[0] || 'Ubicación desconocida';
+        const country = address.country || '';
+        
+        return {
+            lat: data.lat ? Number(data.lat) : lat,
+            long: data.lon ? Number(data.lon) : lon,
+            city: city,
+            country: country
+        };
 
     } catch (error) {
         console.error('Error fetching data:', error);
-        const coords = { "lat": 0, "long": 0, "city": "Not Found" }
-        console.log(coords)
-        return coords
-
+        return {
+            lat: lat,
+            long: lon,
+            city: 'Ubicación desconocida',
+            country: ''
+        };
     }
 };
