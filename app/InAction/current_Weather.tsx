@@ -1,6 +1,4 @@
-import { FiMapPin, FiThermometer, FiWind, FiPlusCircle, FiDroplet, FiClock } from 'react-icons/fi';
-import { WiSunrise, WiMoonAltWaningCrescent4 } from 'react-icons/wi';
-import { useEffect, useState } from 'react';
+import { FiMapPin, FiThermometer, FiWind, FiPlusCircle, FiDroplet } from 'react-icons/fi';
 import NotificationToast from "../components/notificationToast";
 import { FaHome } from 'react-icons/fa';
 
@@ -28,7 +26,6 @@ export default function CurrentWeather({
     temperatureMin, 
     humidity,
     windSpeed, 
-    isDay, 
     onAdd 
 
 
@@ -49,13 +46,6 @@ export default function CurrentWeather({
                             {placeName ? `${placeName}${country ? ', ' + country : ''}` : 'Select a location'}
                         </h2>
                     </div>
-{/*                     <div className="flex items-center text-gray-600">
-                        {isDay ? 
-                            <WiSunrise className="text-2xl text-yellow-500" /> : 
-                            <WiMoonAltWaningCrescent4 className="text-2xl text-blue-900" />
-                        }
-                        <span className="ml-1 text-sm">{isDay ? 'Day' : 'Night'}</span>
-                    </div> */}
                 </div>  
             </div>
 
