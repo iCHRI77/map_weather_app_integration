@@ -1,19 +1,20 @@
 "use client"
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 const Map = dynamic(() => import('./map'), { ssr: false });
 import Sidebar from "./sidebar"
 import StoreProvider from "@/lib/StoreProvider";
-import CurrentWeather from "./current_Weather";
-import { useEffect } from "react";
 import { fetchPlacesDataCoordinates, fetchWeatherDataCelcius } from "../utils/api";
-import { useMarkersStore } from '@/lib/markersStore';
+import useMarkersStore from '@/lib/store';
+
+const CurrentWeather = dynamic(() => import('./current_Weather'), { ssr: false });
 
 export default function InAction() {
   const [markers, setMarkers] = useState<[number, number][]>([]);
   const [country, setCountry] = useState("");
   const [placeName, setPlaceName] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [weatherData, setWeatherData] = useState({
     temperature: 0,
     temperatureMax: 0,
@@ -26,9 +27,9 @@ export default function InAction() {
     isDay: new Date().getHours() >= 6 && new Date().getHours() < 18, // Default based on local time
   });
 
-  const { addPlace } = useMarkersStore();
-
-  const handleSearch = async (query: string, lat?: number, lon?: number) => {
+  const addPlace = useMarkersStore(state => state.addPlace);
+  
+  const handleSearch = useCallback(async (query: string, lat?: number, lon?: number) => {
     try {
       if (lat !== undefined && lon !== undefined) {
         // If we have coordinates, use them directly
@@ -46,9 +47,9 @@ export default function InAction() {
     } catch (error) {
       console.error('Error searching location:', error);
     }
-  };
+  }, []);
 
-  const handleAddToFavorites = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAddToFavorites = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!placeName || markers.length === 0) return;
     
@@ -62,21 +63,25 @@ export default function InAction() {
       lat: markers[0][0],
       lon: markers[0][1]
     });
-  };
+  }, [addPlace, markers, placeName, weatherData, country]);
 
-  const handleMarkerClick = async (position: [number, number]) => {
+  const handlePlaceNameChange = useCallback((name: string) => {
+    setPlaceName(name);
+  }, []);
+
+  const handleMarkerClick = useCallback(async (position: [number, number]) => {
     setMarkers([position]);
     
     try {
-      // Get place name
+      // Get place data
       const placeData = await fetchPlacesDataCoordinates(position[0], position[1]);
-      if (placeData && typeof placeData.city === 'string') {
-        setPlaceName(placeData.city);
-      }
-
-      // Set country from placeData
-      if (placeData && placeData.country) {
-        setCountry(placeData.country);
+      if (placeData) {
+        if (typeof placeData.city === 'string') {
+          setPlaceName(placeData.city);
+        }
+        if (placeData.country) {
+          setCountry(placeData.country);
+        }
       }
 
       // Get weather data
@@ -108,8 +113,7 @@ export default function InAction() {
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-  };
-
+  }, []);
 
     return (
         <StoreProvider>
@@ -119,7 +123,10 @@ export default function InAction() {
                 {/* Map Container - Takes remaining space */}
                 <div className="flex-1 p-4">
                     <div className="h-full bg-white rounded-2xl overflow-hidden shadow-md">
-                        <Map onMarkerClick={handleMarkerClick} />
+                        <Map 
+          onMarkerClick={handleMarkerClick}
+          onPlaceNameChange={handlePlaceNameChange}
+        />
                     </div>
                 </div>
 

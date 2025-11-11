@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+/* import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface markersMapList {
     markers: Place[];
@@ -29,4 +29,4 @@ const markersMapListSlice = createSlice({
 });
 
 export const { AddPlace, RemovePlace } = markersMapListSlice.actions;
-export default markersMapListSlice.reducer;
+export default markersMapListSlice.reducer; */

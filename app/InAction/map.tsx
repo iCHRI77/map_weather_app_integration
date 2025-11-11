@@ -1,101 +1,48 @@
 "use client"
-import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
-import "leaflet/dist/leaflet.css"; // Importar los estilos
-import L from "leaflet";
-import { useEffect, useState } from "react";
-import CurrentWeather from "./current_Weather";
-import { fetchPlacesData, fetchPlacesDataCoordinates, fetchWeatherDataCelcius } from "../utils/api";
-
-// Zustand store for markers
-import { useMarkersStore } from '@/lib/markersStore';
-
-// Fix for Leaflet's default icon in Next.js
+import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import { useState } from "react";
+import { fetchPlacesDataCoordinates} from "../utils/api";
 import { Icon } from 'leaflet';
 
-delete (Icon.Default.prototype as any)._getIconUrl;
+// Fix for Leaflet's default icon in Next.js
+delete (Icon.Default.prototype as { _getIconUrl?: string })._getIconUrl;
 Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
 });
 
+interface MapProps {
+  onMarkerClick?: (position: [number, number]) => void;
+  onPlaceNameChange?: (name: string) => void;
+}
 
 const ClickableMap = ({ onMapClick }: { onMapClick: (position: [number, number]) => void }) => {
   useMapEvents({
     click: (event) => {
-      const { lat, lng } = event.latlng; // Coords of click
-      onMapClick([lat, lng]); // call the funct as prop
+      const { lat, lng } = event.latlng;
+      onMapClick([lat, lng]);
     },
   });
   return null;
 };
 
-interface MapProps {
-  onMarkerClick?: (position: [number, number]) => void;
-}
+export default function Map({ onMarkerClick, onPlaceNameChange }: MapProps) {
+  const [markers, setMarkers] = useState<[number, number][]>([]);
 
-export default function Map({ onMarkerClick }: MapProps) {
-  const [markers, setMarkers] = useState<[number, number][]>([]); // Save mark
-  const [placeName, setPlaceName] = useState("");
-
-  const [weatherData, setWeatherData] = useState({
-    temperature: 0,
-    elevation: 0,
-    windSpeed: 0,
-    icon: "https://openweathermap.org/img/wn/",
-    isDay: true,
-  });
-
-  const { addPlace } = useMarkersStore();
-
-
-
-  // Manage clicks in map
+  // Manage clicks on map
   const handleMapClick = (position: [number, number]) => {
     setMarkers([position]);
-    if (onMarkerClick) {
-      onMarkerClick(position);
-    }
-    fetchPlacesDataCoordinates(position[0], position[1]).then((data) => {
-      if (data && typeof data.city === 'string') {
-        setPlaceName(data.city);
-      }
-    }).catch((error) => {
-      console.error('Error fetching data:', error);
-    });
-  };
-
-
-  useEffect(() => {
-    if (markers.length === 0) return;
-
-    let ignore = false;
-    fetchWeatherDataCelcius(markers[0])
+    onMarkerClick?.(position);
+    
+    fetchPlacesDataCoordinates(position[0], position[1])
       .then((data) => {
-        if (!ignore) {
-          setWeatherData({
-            elevation: data.elevation,
-            temperature: data.current_weather.temperature,
-            windSpeed: data.current_weather.windspeed,
-            icon: data.current_weather.icon,
-            isDay: data.current_weather.isDay,
-          });
+        if (data?.city && typeof data.city === 'string') {
+          onPlaceNameChange?.(data.city);
         }
-      });
-    return () => { ignore = true; };
-
-  }, [markers]);
-
-  const handleSearch = async (query: string) => {
-    try {
-      const data = await fetchPlacesData(query);
-      if (data && typeof data.lat === 'number' && typeof data.long === 'number') {
-        setMarkers([[data.lat, data.long]]);
-        setPlaceName(data.name);
-      }
-    } catch (error) {
-      console.error('Error searching location:', error);
-    }
+      })
+      .catch(console.error);
   };
 
   return (
@@ -106,7 +53,7 @@ export default function Map({ onMarkerClick }: MapProps) {
         style={{ 
           width: '100%', 
           height: '100%',
-          backgroundColor: '#e5e7eb', // Light gray background
+          backgroundColor: '#e5e7eb',
         }}
         className="rounded-2xl shadow-lg"
       >
@@ -128,9 +75,7 @@ export default function Map({ onMarkerClick }: MapProps) {
               popupAnchor: [1, -34],
               shadowSize: [41, 41]
             })}
-          >
-            {/* Popup content removed as per your request */}
-          </Marker>
+          />
         ))}
       </MapContainer>
     </div>

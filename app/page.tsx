@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "./components/navbar";
 import * as motion from "motion/react-client"
 
@@ -31,11 +32,13 @@ export default function Home() {
       <div className="px-4 sm:px-6 md:px-12 lg:px-24 xl:px-28 bg-gray-100 pt-20 md:pt-24 pb-12 md:pb-20">
         <section className="relative h-[60vh] sm:h-[65vh] md:h-[70vh] rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden">
           <div className="absolute inset-0">
-            <img 
-              src="/weather-bg.jpg" 
-              alt="Weather background" 
-              className="w-full h-full object-cover"
-              loading="eager"
+            <Image
+              src="/weather-bg.jpg"
+              alt="Weather background"
+              fill
+              sizes="100vw"
+              className="object-cover"
+              priority
             />
             <div className="absolute inset-0 bg-black/40"></div>
           </div>

@@ -4,9 +4,9 @@ import { FaBars, FaTimes, FaHome } from 'react-icons/fa';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MdDeleteForever } from "react-icons/md";
-import { WiSunrise, WiMoonAltWaningCrescent4 } from 'react-icons/wi';
+// Icons are used dynamically in the component
 import ConfirmationModal from '../components/ConfirmationModal';
-import { useMarkersStore } from '@/lib/markersStore';
+import useMarkersStore from '@/lib/store';
 import * as motion from "motion/react-client";
 import SearchBar from '../components/SearchBar';
 
@@ -19,7 +19,8 @@ const Sidebar = ({ onSearch }: SidebarProps) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-    const { markers, removePlace } = useMarkersStore();
+    const markers = useMarkersStore(state => state.markers);
+  const removePlace = useMarkersStore(state => state.removePlace);
 
     const handleDeleteClick = (index: number) => {
         setSelectedIndex(index);
@@ -45,8 +46,14 @@ const Sidebar = ({ onSearch }: SidebarProps) => {
         }
     }, [searchQuery, onSearch]);
 
-    const handleFavoriteClick = (place: any) => {
-        if (place.lat && place.lon) {
+    interface FavoritePlace {
+    name: string;
+    lat: number;
+    lon: number;
+  }
+
+  const handleFavoriteClick = (place: FavoritePlace) => {
+        if (place?.lat && place?.lon) {
             onSearch(place.name, place.lat, place.lon);
         } else {
             onSearch(place.name);

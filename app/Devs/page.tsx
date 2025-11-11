@@ -1,10 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 import Navbar from '../components/navbar';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function DevsPage() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -26,7 +26,7 @@ export default function DevsPage() {
     {
       name: 'Christian Barbosa',
       role: 'Full Stack Developer',
-      image: '/dev1.jpg', // Replace with actual image paths
+      image: '/cj1.jpeg', // Replace with actual image paths
       email: 'christianjbarbosab@gmail.com',
       linkedin: 'https://www.linkedin.com/in/christianbarbosa2711/',
       github: 'https://github.com/CJ2711'
@@ -34,7 +34,7 @@ export default function DevsPage() {
     {
       name: 'Christian Wilhelm',
       role: 'Full Stack Developer',
-      image: '/dev2.jpg', // Replace with actual image paths
+      image: '/cj2.jpeg', // Replace with actual image paths
       email: 'wilhelmchristianj@gmail.com',
       linkedin: 'https://www.linkedin.com/in/christian-wilhelm-8071802b2/',
       github: 'https://github.com/christianjws24'
@@ -69,14 +69,18 @@ export default function DevsPage() {
                 <div className="p-8 flex-1 flex flex-col items-center">
                   {/* Profile Image */}
                   <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-blue-100 mb-6">
-                    <img 
-                      src={dev.image} 
-                      alt={dev.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(dev.name)}&background=3b82f6&color=fff&size=200`;
-                      }}
-                    />
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={dev.image}
+                        alt={dev.name}
+                        fill
+                        className="object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(dev.name)}&background=3b82f6&color=fff&size=200`;
+                        }}
+                        unoptimized={dev.image.startsWith('http')} // Only optimize local images
+                      />
+                    </div>
                   </div>
                   
                   {/* Name and Role */}
